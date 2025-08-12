@@ -1,0 +1,10 @@
+# Code Owners for Popup Policies for Autotask
+# This file defines who is automatically assigned as reviewers for pull requests
+# in specific files or directories.
+# 
+# For more information about this file, see:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global ownership
+# All files in the repository are owned by @a-ariff unless specified otherwise
+* @a-ariff
