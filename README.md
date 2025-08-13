@@ -38,18 +38,21 @@ git clone https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge
 **macOS Chrome/Edge JSON**: `PopupsAllowedForUrls`, `PopupsBlockedForUrls`, `DefaultPopupsSetting`
 **macOS Safari XML**: `AllowedPopupDomains` / `PerSitePreferences` (script maps for you), plus default popup control
 **Windows Chrome/Edge JSON**: `PopupsAllowedForUrls`, `PopupsBlockedForUrls`, `DefaultPopupsSetting`
-
+### macOS Chrome (plist) quick deploy
+1. **Upload plist**: Navigate to Intune Admin Center > Devices > Configuration profiles > Create profile
+2. **Platform**: Select macOS > Settings Catalog
+3. **Add settings**: Search "Google Chrome" > Upload chrome-popup-allow-ww6.plist
+4. **Assign**: Target device groups and deploy
+5. **Verify**: On target Mac, open Chrome and navigate to `chrome://policy` to confirm policy application
 ### Keys Reference
 #### Chrome/Edge Popup Policy Keys
 - **PopupsAllowedForUrls**: Array of URL patterns where popups are explicitly allowed
 - **PopupsBlockedForUrls**: Array of URL patterns where popups are explicitly blocked
 - **DefaultPopupsSetting**: Default popup behavior (1 = allow, 2 = block)
-
 #### Safari Popup Policy Keys (macOS)
 - **AllowedPopupDomains**: Array of domains permitted to show popups
 - **PerSitePreferences**: Dictionary mapping domains to popup preferences
 - **PopupPolicy**: Global popup policy setting
-
 #### Key Assignments by Platform
 | Platform | Browser | Allow Key | Block Key | Default Key |
 |----------|---------|-----------|-----------|-------------|
