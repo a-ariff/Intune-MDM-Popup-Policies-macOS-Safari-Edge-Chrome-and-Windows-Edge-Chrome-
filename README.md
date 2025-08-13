@@ -2,7 +2,7 @@
 
 Comprehensive cross-platform Microsoft Intune MDM popup policy templates and automation scripts for browser management on macOS and Windows endpoints.
 
-📄 **[Complete Deployment Guide (GitHub Pages)](/popup-policy-guide)** - Essential setup and configuration instructions
+📄 **Complete Deployment Guide:** [View on GitHub](docs/popup-policy-guide.md) | [View on GitHub Pages](/popup-policy-guide) - Essential setup and configuration instructions
 
 ## Overview
 
