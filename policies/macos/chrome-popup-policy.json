@@ -1,0 +1,45 @@
+{
+  "@odata.type": "#microsoft.graph.macOSOfficeSuiteApp",
+  "displayName": "Chrome Popup Blocker Policy - macOS",
+  "description": "Chrome popup blocking configuration for macOS devices managed by Intune",
+  "bundleId": "com.google.Chrome",
+  "appIdentifier": "com.google.Chrome",
+  "settings": {
+    "PopupsAllowedForUrls": [
+      "https://example.com"
+    ],
+    "PopupsBlockedForUrls": [
+      "*"
+    ],
+    "DefaultPopupsSetting": 2,
+    "AutofillAddressEnabled": false,
+    "AutofillCreditCardEnabled": false,
+    "PasswordManagerEnabled": false,
+    "DefaultNotificationsSetting": 2,
+    "TrackingPreventionLevel": 2,
+    "BlockThirdPartyCookies": true,
+    "SafeBrowsingEnabled": true,
+    "SafeBrowsingExtendedReportingEnabled": false,
+    "MetricsReportingEnabled": false,
+    "DefaultSearchProviderEnabled": true,
+    "SpellcheckEnabled": true,
+    "TranslateEnabled": true,
+    "DeveloperToolsDisabled": false,
+    "BookmarkBarEnabled": true,
+    "ShowHomeButton": true,
+    "BrowserGuestModeEnabled": false,
+    "BrowserSignin": 0,
+    "SyncDisabled": false,
+    "DefaultGeolocationSetting": 2,
+    "DefaultMediaStreamSetting": 2,
+    "DefaultWebBluetoothGuardSetting": 2,
+    "DefaultWebUsbGuardSetting": 2
+  },
+  "assignments": [
+    {
+      "target": {
+        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+      }
+    }
+  ]
+}
