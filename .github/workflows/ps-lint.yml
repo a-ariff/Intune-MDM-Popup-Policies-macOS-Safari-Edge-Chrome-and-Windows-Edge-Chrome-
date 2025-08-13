@@ -1,0 +1,45 @@
+name: PowerShell Lint
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install PowerShell
+      shell: bash
+      run: |
+        # Install PowerShell
+        wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
+        sudo apt-get update
+        sudo apt-get install -y powershell
+    
+    - name: Install PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+    
+    - name: Lint PowerShell files
+      shell: pwsh
+      run: |
+        $files = Get-ChildItem -Path . -Recurse -Include *.ps1, *.psm1, *.psd1
+        if ($files.Count -gt 0) {
+          $results = $files | ForEach-Object { Invoke-ScriptAnalyzer -Path $_.FullName }
+          if ($results) {
+            $results | Format-Table
+            Write-Error "PSScriptAnalyzer found issues. Please fix them."
+            exit 1
+          } else {
+            Write-Output "No PowerShell linting issues found."
+          }
+        } else {
+          Write-Output "No PowerShell files found to lint."
+        }
