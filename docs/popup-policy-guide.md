@@ -2,6 +2,8 @@
 title: "Intune Browser Pop-up Policy Guide"
 ---
 
+![Repository Icon](assets/icon.svg)
+
 # Intune Browser Pop-up Policy Guide
 
 ## Status
@@ -12,7 +14,6 @@ title: "Intune Browser Pop-up Policy Guide"
 > **⚠️ IMPORTANT:** Before deploying any of these policies, make sure to replace all example domains (like `your-allowed-domain.example`) with your actual domain names. Failing to do so will result in non-functional popup policies.
 
 **Table of Contents**
-
 - [macOS Chrome (JSON)](#macos-chrome-json)
 - [macOS Chrome (plist)](#macos-chrome-plist)
 - [macOS Edge (JSON)](#macos-edge-json)
@@ -53,17 +54,3 @@ For organizations that need to allow pop-ups on multiple domains:
   "bundleId": "com.google.Chrome",
   "settings": {
     "DefaultPopupsSetting": 2,
-    "PopupsAllowedForUrls": [
-      "https://app.company.com",
-      "https://portal.company.com",
-      "https://helpdesk.company.com",
-      "https://training.company.com"
-    ],
-    "PopupsBlockedForUrls": ["*"]
-  }
-}
-```
-
-**Deploy via Settings Catalog**
-
-1. In Intune Admin Center → Devices → Configuration profiles → Create profile
