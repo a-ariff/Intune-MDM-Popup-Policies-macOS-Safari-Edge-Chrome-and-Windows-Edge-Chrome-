@@ -6,7 +6,7 @@
   "appIdentifier": "com.google.Chrome",
   "settings": {
     "PopupsAllowedForUrls": [
-      "https://ww6.autotask.net"
+      "https://your-allowed-domain.example"
     ],
     "PopupsBlockedForUrls": [
       "*"
