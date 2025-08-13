@@ -1,5 +1,4 @@
-<#
-.SYNOPSIS
+<#.SYNOPSIS
     Creates a new Intune popup policy for web browsers.
 .DESCRIPTION
     This function creates and configures an Intune popup policy that can be applied to web browsers
@@ -34,25 +33,19 @@
     Purpose: Enhanced Intune popup policy management with browser-specific schema mapping
 #>
 [CmdletBinding(SupportsShouldProcess)]
-param
-(
+param(
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string]$PolicyName,
-
     [Parameter(Mandatory = $false)]
     [string]$Description = "Popup policy created via PowerShell",
-
     [Parameter(Mandatory = $false)]
     [ValidateSet('Allow', 'Block')]
     [string]$PopupAction = 'Block',
-
     [Parameter(Mandatory = $false)]
     [string[]]$AllowedSites = @(),
-
     [Parameter(Mandatory = $false)]
     [string[]]$BlockedSites = @(),
-
     [Parameter(Mandatory = $false)]
     [ValidateSet('macOS', 'Windows', 'Both')]
     [string]$Platform = 'Both'
@@ -62,48 +55,42 @@ begin {
     Write-Information -MessageData "Policy Name: $PolicyName" -InformationAction Continue
     Write-Information -MessageData "Popup Action: $PopupAction" -InformationAction Continue
     Write-Information -MessageData "Platform: $Platform" -InformationAction Continue
-
-    # Helper function to get browser-specific configuration
+    
+    # Helper function to get browser policy configuration
     function Get-BrowserPolicyConfig {
         param(
+            [Parameter(Mandatory = $true)]
+            [ValidateSet('Safari', 'Edge', 'Chrome')]
             [string]$Browser,
-            [string]$OS,
-            [string]$PopupAction,
-            [string[]]$AllowedSites,
-            [string[]]$BlockedSites
+            [Parameter(Mandatory = $false)]
+            [ValidateSet('Allow', 'Block')]
+            [string]$PopupAction = 'Block',
+            [Parameter(Mandatory = $false)]
+            [string[]]$AllowedSites = @(),
+            [Parameter(Mandatory = $false)]
+            [string[]]$BlockedSites = @()
         )
-
+        
         $config = @{}
-
+        
         switch ($Browser) {
             'Safari' {
-                # Safari on macOS
-                if ($PopupAction -eq 'Block') {
-                    $config['com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically'] = $false
-                } else {
-                    $config['com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically'] = $true
-                }
-
-                # Site-specific settings for Safari
-                if ($AllowedSites.Count -gt 0) {
-                    $allowedDict = @{}
-                    foreach ($site in $AllowedSites) {
-                        $allowedDict[$site] = @{
-                            'WebKitJavaScriptCanOpenWindowsAutomatically' = $true
-                        }
+                # Safari configuration for macOS
+                $config = @{
+                    'com.apple.Safari' = @{
+                        'PopupBlocking' = ($PopupAction -eq 'Block')
                     }
-                    $config['com.apple.Safari.PerSitePreferences'] = $allowedDict
+                }
+                if ($AllowedSites.Count -gt 0 -or $BlockedSites.Count -gt 0) {
+                    $config['com.apple.Safari']['PopupAllowList'] = $AllowedSites
+                    $config['com.apple.Safari']['PopupBlockList'] = $BlockedSites
                 }
             }
-            'Chrome' {
-                # Chrome configuration
-                if ($PopupAction -eq 'Block') {
-                    $config['DefaultPopupsSetting'] = 2  # Block
-                } else {
-                    $config['DefaultPopupsSetting'] = 1  # Allow
+            'Edge' {
+                # Microsoft Edge configuration
+                $config = @{
+                    'DefaultPopupsSetting' = if ($PopupAction -eq 'Block') { 2 } else { 1 }
                 }
-
-                # Site-specific settings
                 if ($AllowedSites.Count -gt 0) {
                     $config['PopupsAllowedForUrls'] = $AllowedSites
                 }
@@ -111,15 +98,11 @@ begin {
                     $config['PopupsBlockedForUrls'] = $BlockedSites
                 }
             }
-            'Edge' {
-                # Edge configuration (similar to Chrome)
-                if ($PopupAction -eq 'Block') {
-                    $config['DefaultPopupsSetting'] = 2  # Block
-                } else {
-                    $config['DefaultPopupsSetting'] = 1  # Allow
+            'Chrome' {
+                # Google Chrome configuration
+                $config = @{
+                    'DefaultPopupsSetting' = if ($PopupAction -eq 'Block') { 2 } else { 1 }
                 }
-
-                # Site-specific settings
                 if ($AllowedSites.Count -gt 0) {
                     $config['PopupsAllowedForUrls'] = $AllowedSites
                 }
@@ -128,80 +111,48 @@ begin {
                 }
             }
         }
-
+        
         return $config
     }
 }
 process {
     try {
-        Write-Information -MessageData "Processing popup policy creation" -InformationAction Continue
-
         # Determine target browsers based on platform
-        $targetBrowsers = switch ($Platform) {
-            'macOS' { @('Safari', 'Chrome', 'Edge') }
-            'Windows' { @('Chrome', 'Edge') }
-            'Both' { @('Safari', 'Chrome', 'Edge') }
+        $targetBrowsers = @()
+        switch ($Platform) {
+            'macOS' {
+                $targetBrowsers = @('Safari', 'Edge', 'Chrome')
+            }
+            'Windows' {
+                $targetBrowsers = @('Edge', 'Chrome')
+            }
+            'Both' {
+                $targetBrowsers = @('Safari', 'Edge', 'Chrome')
+            }
         }
-
+        
         Write-Information -MessageData "Target browsers: $($targetBrowsers -join ', ')" -InformationAction Continue
-
-        # Validate sites format
-        $validatedAllowedSites = @()
-        $validatedBlockedSites = @()
-
-        if ($AllowedSites.Count -gt 0) {
-            foreach ($site in $AllowedSites) {
-                if ($site -match '^https?://') {
-                    $validatedAllowedSites += $site
-                } else {
-                    Write-Warning "Allowed site '$site' does not include protocol (http/https). Adding https://"
-                    $validatedAllowedSites += "https://$site"
-                }
-            }
-        }
-
-        if ($BlockedSites.Count -gt 0) {
-            foreach ($site in $BlockedSites) {
-                if ($site -match '^https?://') {
-                    $validatedBlockedSites += $site
-                } else {
-                    Write-Warning "Blocked site '$site' does not include protocol (http/https). Adding https://"
-                    $validatedBlockedSites += "https://$site"
-                }
-            }
-        }
-
-        # Update the arrays with validated sites
-        $AllowedSites = $validatedAllowedSites
-        $BlockedSites = $validatedBlockedSites
-
-        Write-Information -MessageData "Validated allowed sites: $($AllowedSites -join ', ')" -InformationAction Continue
-        Write-Information -MessageData "Validated blocked sites: $($BlockedSites -join ', ')" -InformationAction Continue
-
-        # Confirm action
-        $confirmMessage = "Create popup policy '$PolicyName' for browsers: $($targetBrowsers -join ', ') on platform(s): $Platform with action: $PopupAction?"
+        
+        # Initialize policy collection
+        $policies = @()
+        
         if ($PSCmdlet.ShouldProcess($PolicyName, "Create Intune popup policy")) {
-            Write-Information -MessageData "User confirmed policy creation" -InformationAction Continue
-
-            # Initialize policy collection
-            $policies = @()
-
             # Create policy configurations for each browser
             foreach ($browser in $targetBrowsers) {
                 $os = if ($browser -eq 'Safari') { 'macOS' } else { $Platform }
-
+                
                 # Skip Safari on Windows
                 if ($browser -eq 'Safari' -and $Platform -eq 'Windows') {
                     continue
                 }
-
-                $browserConfig = Get-BrowserPolicyConfig -Browser $browser -OS $os -PopupAction $PopupAction -AllowedSites $AllowedSites -BlockedSites $BlockedSites
-
+                
+                $browserConfig = Get-BrowserPolicyConfig -Browser $browser -PopupAction $PopupAction -AllowedSites $AllowedSites -BlockedSites $BlockedSites
+                
                 # Ensure DefaultPopupsSetting=2 when PopupAction=Block
                 if ($PopupAction -eq 'Block') {
                     $browserConfig['DefaultPopupsSetting'] = 2
                 }
-
+                
                 $policyParams = @{
                     DisplayName = "$PolicyName - $browser"
                     Description = "$Description (Browser: $browser, OS: $os)"
@@ -212,10 +163,10 @@ process {
                     AllowedSites = $AllowedSites
                     BlockedSites = $BlockedSites
                 }
-
+                
                 Write-Information -MessageData "Policy parameters prepared for $browser on $os" -InformationAction Continue
                 Write-Information -MessageData "Configuration: $($browserConfig | ConvertTo-Json -Compress)" -InformationAction Continue
-
+                
                 # Create policy object
                 $policy = [PSCustomObject]@{
                     PolicyName = $policyParams.DisplayName
@@ -227,12 +178,12 @@ process {
                     Status = "Created"
                     Timestamp = Get-Date
                 }
-
+                
                 $policies += $policy
             }
-
+            
             Write-Information -MessageData "Policy creation completed successfully for $($policies.Count) browser configurations" -InformationAction Continue
-
+            
             # Return policy collection
             return $policies
         }
