@@ -6,7 +6,7 @@
   "appIdentifier": "com.google.Chrome",
   "settings": {
     "PopupsAllowedForUrls": [
-      "https://example.com"
+      "https://ww6.autotask.net"
     ],
     "PopupsBlockedForUrls": [
       "*"
@@ -34,12 +34,5 @@
     "DefaultMediaStreamSetting": 2,
     "DefaultWebBluetoothGuardSetting": 2,
     "DefaultWebUsbGuardSetting": 2
-  },
-  "assignments": [
-    {
-      "target": {
-        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
-      }
-    }
-  ]
+  }
 }
