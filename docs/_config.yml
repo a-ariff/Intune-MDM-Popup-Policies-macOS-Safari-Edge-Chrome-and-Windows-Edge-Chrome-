@@ -1,2 +1,23 @@
 title: Intune Popup Policy Guide
 theme: jekyll-theme-cayman
+
+# Favicon configuration
+favicon: /assets/favicon.ico
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Default layout with favicon
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      favicon: "/assets/favicon.ico"
