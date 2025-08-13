@@ -5,6 +5,7 @@ title: "Intune Browser Pop-up Policy Guide"
 # Intune Browser Pop-up Policy Guide
 
 **Table of Contents**
+
 - [macOS Chrome (JSON)](#macos-chrome-json)
 - [macOS Chrome (plist)](#macos-chrome-plist)
 - [macOS Edge (JSON)](#macos-edge-json)
@@ -18,6 +19,7 @@ title: "Intune Browser Pop-up Policy Guide"
 ---
 
 ## macOS Chrome (JSON)
+
 This configuration blocks pop-ups on all websites and prevents users from changing the permission. Only domains in PopupsAllowedForUrls are permitted.
 
 ```json
@@ -34,6 +36,7 @@ This configuration blocks pop-ups on all websites and prevents users from changi
 ```
 
 **Deploy via Settings Catalog**
+
 1. In Intune Admin Center → Devices → Configuration profiles → Create profile
 2. Platform: **macOS**, Profile type: **Settings catalog**
 3. Add settings for **Google Chrome**:
@@ -46,6 +49,7 @@ Verify on device via chrome://policy.
 ---
 
 ## macOS Chrome (plist)
+
 This keeps Chrome's default popup behavior but explicitly allows pop-ups on the listed sites. You can verify applied policy in chrome://policy.
 
 ```xml
@@ -89,6 +93,7 @@ This keeps Chrome's default popup behavior but explicitly allows pop-ups on the 
 ---
 
 ## macOS Edge (JSON)
+
 This blocks pop-ups on all websites except those explicitly allowed.
 
 ```json
@@ -107,6 +112,7 @@ This blocks pop-ups on all websites except those explicitly allowed.
 ---
 
 ## macOS Safari (XML)
+
 This configuration disables pop-ups in Safari.
 
 ```xml
@@ -148,6 +154,7 @@ This configuration disables pop-ups in Safari.
 ---
 
 ## Windows Chrome (JSON)
+
 This blocks pop-ups on all websites except those explicitly allowed.
 
 ```json
@@ -160,9 +167,26 @@ This blocks pop-ups on all websites except those explicitly allowed.
 }
 ```
 
+### Deploy via Templates
+
+Use Intune Settings Catalog templates for Chrome or ADMX-backed templates:
+
+1. **Create profile** → Devices → Configuration profiles → Create profile
+2. Platform: **Windows 10 and later**, Profile type: **Templates**
+3. Select **Administrative Templates**
+4. **Select Chrome** (Google Chrome or Microsoft Edge)
+5. **Configure popup settings keys**:
+   - Navigate to Chrome/Edge policies
+   - Set **Default pop-up setting** = Block (2)
+   - Configure **Pop-ups allowed for URLs** = `https://your-allowed-domain.example`
+   - Configure **Pop-ups blocked for URLs** = `*`
+
+The JSON method above remains available as an alternative deployment approach.
+
 ---
 
 ## Windows Edge (JSON)
+
 This blocks pop-ups on all websites except those explicitly allowed.
 
 ```json
@@ -175,42 +199,63 @@ This blocks pop-ups on all websites except those explicitly allowed.
 }
 ```
 
+### Deploy via Templates
+
+Use Intune Settings Catalog templates for Edge or ADMX-backed templates:
+
+1. **Create profile** → Devices → Configuration profiles → Create profile
+2. Platform: **Windows 10 and later**, Profile type: **Templates**
+3. Select **Administrative Templates**
+4. **Select Edge** (Microsoft Edge)
+5. **Configure popup settings keys**:
+   - Navigate to Edge policies
+   - Set **Default pop-up setting** = Block (2)
+   - Configure **Pop-ups allowed for URLs** = `https://your-allowed-domain.example`
+   - Configure **Pop-ups blocked for URLs** = `*`
+
+The JSON method above remains available as an alternative deployment approach.
+
 ---
 
 ## Keys Reference
 
 ### Popup Settings Values
-- `0` = Allow all pop-ups
-- `1` = Block all pop-ups (default)
-- `2` = Block all pop-ups (enforced)
+
+• 0 = Allow all pop-ups
+• 1 = Block all pop-ups (default)
+• 2 = Block all pop-ups (enforced)
 
 ### URL Format Examples
-- `https://example.com` - Specific domain
-- `https://*.example.com` - All subdomains
-- `*` - All websites (wildcard)
+
+• https://example.com - Specific domain
+• https://*.example.com - All subdomains
+• * - All websites (wildcard)
 
 ---
 
 ## Step-by-Step Deployment
 
 ### 1. Prepare Your Configuration
-- Choose the appropriate configuration for your platform
-- Replace placeholder domains with your actual allowed sites
-- Generate UUIDs where required (see [Generate a UUID](#generate-a-uuid) section)
+
+• Choose the appropriate configuration for your platform
+• Replace placeholder domains with your actual allowed sites
+• Generate UUIDs where required (see [Generate a UUID](#generate-a-uuid) section)
 
 ### 2. Deploy via Intune
+
 1. Sign in to Microsoft Intune Admin Center
-2. Navigate to **Devices** → **Configuration profiles**
-3. Click **Create profile**
+2. Navigate to Devices → Configuration profiles
+3. Click Create profile
 4. Select your platform (Windows/macOS) and profile type
 5. Configure the policy settings
 6. Assign to appropriate groups
 7. Review and create
 
 ### 3. Monitor Deployment
-- Check deployment status in Intune
-- Verify policy application on test devices
-- Monitor for any deployment failures
+
+• Check deployment status in Intune
+• Verify policy application on test devices
+• Monitor for any deployment failures
 
 ### Generate a UUID
 
