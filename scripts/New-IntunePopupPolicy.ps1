@@ -1,5 +1,4 @@
-<#.SYNOPSIS
-    Creates a new Intune popup policy for web browsers.
+<#.SYNOPSIS    Creates a new Intune popup policy for web browsers.
 .DESCRIPTION
     This function creates and configures an Intune popup policy that can be applied to web browsers
     on macOS (Safari, Edge, Chrome) and Windows (Edge, Chrome). The policy helps manage popup
