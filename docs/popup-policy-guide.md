@@ -2,15 +2,17 @@
 title: "Intune Browser Pop-up Policy Guide"
 ---
 
-> **ℹ️ NOTE:** Workflow status badges and icons reflect only the main branch. If not visible here, check the README on the main repository page for build status.
-
 ![Repository Icon](assets/icon.svg)
+
+[![PowerShell Lint](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/ps-lint.yml?branch=main)
+[![Validate Policies](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/validate-policies.yml/badge.svg?branch=main)](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/validate-policies.yml?branch=main)
 
 # Intune Browser Pop-up Policy Guide
 
 > **⚠️ IMPORTANT:** Before deploying any of these policies, make sure to replace all example domains (like `your-allowed-domain.example`) with your actual domain names. Failing to do so will result in non-functional popup policies.
 
 **Table of Contents**
+
 - [macOS Chrome (JSON)](#macos-chrome-json)
 - [macOS Chrome (plist)](#macos-chrome-plist)
 - [macOS Edge (JSON)](#macos-edge-json)
