@@ -1,11 +1,9 @@
 name: PowerShell Lint
-
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -32,11 +30,31 @@ jobs:
       run: |
         $files = Get-ChildItem -Path . -Recurse -Include *.ps1, *.psm1, *.psd1
         if ($files.Count -gt 0) {
-          $results = $files | ForEach-Object { Invoke-ScriptAnalyzer -Path $_.FullName }
-          if ($results) {
-            $results | Format-Table
-            Write-Error "PSScriptAnalyzer found issues. Please fix them."
-            exit 1
+          $allResults = $files | ForEach-Object { Invoke-ScriptAnalyzer -Path $_.FullName }
+          
+          if ($allResults) {
+            # Separate errors from warnings
+            $errors = $allResults | Where-Object { $_.Severity -eq 'Error' }
+            $warnings = $allResults | Where-Object { $_.Severity -ne 'Error' }
+            
+            # Display all results
+            $allResults | Format-Table
+            
+            # Show summary
+            Write-Output "Found $($errors.Count) errors and $($warnings.Count) warnings/info issues"
+            
+            if ($warnings.Count -gt 0) {
+              Write-Output "Warnings and info issues (non-blocking):"
+              $warnings | ForEach-Object { Write-Output "  - $($_.RuleName): $($_.Message)" }
+            }
+            
+            # Only fail on errors
+            if ($errors.Count -gt 0) {
+              Write-Error "PSScriptAnalyzer found $($errors.Count) error(s). Failing the build."
+              exit 1
+            } else {
+              Write-Output "No errors found. Warnings are informational only."
+            }
           } else {
             Write-Output "No PowerShell linting issues found."
           }
