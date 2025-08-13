@@ -3,13 +3,13 @@
   "displayName": "Edge Popup Blocker Policy - Windows",
   "description": "Microsoft Edge popup blocking configuration for Windows devices managed by Intune",
   "settings": {
+    "DefaultPopupsSetting": 2,
     "PopupsAllowedForUrls": [
       "https://ww6.autotask.net"
     ],
     "PopupsBlockedForUrls": [
       "*"
     ],
-    "DefaultPopupsSetting": 2,
     "AutofillAddressEnabled": false,
     "AutofillCreditCardEnabled": false,
     "PasswordManagerEnabled": false,
@@ -34,3 +34,8 @@
   "assignments": [
     {
       "target": {
+        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+      }
+    }
+  ]
+}
