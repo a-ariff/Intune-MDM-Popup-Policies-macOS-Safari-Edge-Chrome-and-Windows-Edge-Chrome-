@@ -1,9 +1,11 @@
 ---
 title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrome, Edge, and Safari via Intune"
 ---
+
 # Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrome, Edge, and Safari via Intune
 
-**Table of Contents**  
+**Table of Contents**
+  
 - [macOS Chrome (JSON)](#macos-chrome-json)  
 - [macOS Chrome (plist)](#macos-chrome-plist)  
 - [macOS Edge (JSON)](#macos-edge-json)  
@@ -15,7 +17,11 @@ title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrom
 - [Troubleshooting & Verification](#troubleshooting--verification)  
 
 ---
+
 ## macOS Chrome (JSON)
+
+This configuration blocks pop-ups on all websites and prevents users from changing the permission. Only domains in PopupsAllowedForUrls are permitted.
+
 ```json
 {
   "@odata.type": "#microsoft.graph.macOSOfficeSuiteApp",
@@ -37,44 +43,31 @@ title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrom
    - PopupsAllowedForUrls = `["https://your-allowed-domain.example"]`  
    - PopupsBlockedForUrls = `["*"]`  
 
+Verify on device via chrome://policy.
+
 ---
+
 ## macOS Chrome (plist)
+
+This keeps Chrome's default popup behavior but explicitly allows pop-ups on the listed sites. You can verify applied policy in chrome://policy.
+
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>PayloadType</key>
-  <string>com.google.Chrome</string>
-  <key>PayloadVersion</key>
-  <integer>1</integer>
-  <key>PayloadIdentifier</key>
-  <string>com.company.chrome.popup.allow</string>
-  <key>DefaultPopupsSetting</key>
-  <integer>2</integer>
-  <key>PopupsAllowedForUrls</key>
-  <array>
-    <string>https://your-allowed-domain.example</string>
-  </array>
-  <key>PopupsBlockedForUrls</key>
-  <array>
-    <string>*</string>
-  </array>
-</dict>
-</plist>
+<key>PopupsAllowedForUrls</key>
+<array>
+  <string>https://ww6.autotask.net</string>
+</array>
 ```
 
-**Deploy via Custom Profile**  
-1. Create profile → Platform: macOS, Profile type: Custom  
-2. Upload this plist and assign to device groups  
+Verify on device via chrome://policy.
 
 ---
+
 ## macOS Edge (JSON)
 ```json
 {
   "@odata.type": "#microsoft.graph.macOSOfficeSuiteApp",
   "displayName": "Edge Popup Blocker Policy - macOS",
-  "bundleId": "com.microsoft.Edge",
+  "bundleId": "com.microsoft.edgemac",
   "settings": {
     "DefaultPopupsSetting": 2,
     "PopupsAllowedForUrls": ["https://your-allowed-domain.example"],
@@ -84,25 +77,25 @@ title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrom
 ```
 
 ---
+
 ## macOS Safari (XML)
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>PayloadType</key>
-  <string>com.apple.Safari</string>
   <key>PopupBlocking</key>
   <true/>
   <key>AllowedPopupDomains</key>
   <array>
-    <string>your-allowed-domain.example</string>
+    <string>https://your-allowed-domain.example</string>
   </array>
 </dict>
 </plist>
 ```
 
 ---
+
 ## Windows Chrome (JSON)
 ```json
 {
@@ -117,6 +110,7 @@ title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrom
 ```
 
 ---
+
 ## Windows Edge (JSON)
 ```json
 {
@@ -131,14 +125,18 @@ title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrom
 ```
 
 ---
+
 ## Keys Reference
+
 | Browser / Platform | Allow Key               | Block Key               | Default Key            |
 |--------------------|-------------------------|-------------------------|------------------------|
 | Chrome & Edge      | PopupsAllowedForUrls    | PopupsBlockedForUrls    | DefaultPopupsSetting   |
 | Safari (macOS)     | AllowedPopupDomains     | N/A                     | PopupBlocking          |
 
 ---
+
 ## Step-by-Step Deployment
+
 1. **Settings Catalog (Windows/macOS Chrome & Edge)**  
    - Create profile → Settings catalog  
    - Select browser → configure keys as above  
@@ -150,15 +148,19 @@ title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrom
    - Assign and deploy → verify in browser or Safari Profiles/Settings  
 
 ---
+
 ## Troubleshooting & Verification
+
 - **Verify on device**:  
   - `chrome://policy` or `edge://policy` for JSON profiles  
   - System Preferences → Profiles (macOS) for XML/plist  
+
 - **Common fixes**:  
   - Confirm device enrollment & group assignment  
   - Force sync or restart browser/device  
   - Check syntax with `jq` (JSON) or `xmllint` (XML)  
 
 ---
+
 After that, your guide will be live at:  
 `https://a-ariff.github.io/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/popup-policy-guide.html`
