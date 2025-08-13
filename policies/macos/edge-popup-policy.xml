@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadDisplayName</key>
+            <string>Microsoft Edge Popup Blocker</string>
+            <key>PayloadIdentifier</key>
+            <string>com.microsoft.Edge.PopupBlocking</string>
+            <key>PayloadType</key>
+            <string>com.microsoft.Edge</string>
+            <key>PayloadUUID</key>
+            <string>11111111-2222-3333-4444-555555555555</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>DefaultPopupsSetting</key>
+            <integer>2</integer>
+            <key>PopupsAllowedForUrls</key>
+            <array>
+                <string>https://example.com</string>
+            </array>
+            <key>PopupsBlockedForUrls</key>
+            <array>
+                <string>*</string>
+            </array>
+            <key>AutofillAddressEnabled</key>
+            <false/>
+            <key>AutofillCreditCardEnabled</key>
+            <false/>
+            <key>PasswordManagerEnabled</key>
+            <false/>
+            <key>DefaultNotificationsSetting</key>
+            <integer>2</integer>
+            <key>TrackingPrevention</key>
+            <integer>2</integer>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Microsoft Edge popup blocking configuration for macOS devices</string>
+    <key>PayloadDisplayName</key>
+    <string>Edge Popup Policy</string>
+    <key>PayloadIdentifier</key>
+    <string>com.company.edge.popup.policy</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>
