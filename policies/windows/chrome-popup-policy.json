@@ -1,0 +1,41 @@
+{
+  "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
+  "displayName": "Chrome Popup Blocker Policy - Windows",
+  "description": "Google Chrome popup blocking configuration for Windows devices managed by Intune",
+  "settings": {
+    "PopupsAllowedForUrls": [
+      "https://ww6.autotask.net"
+    ],
+    "PopupsBlockedForUrls": [
+      "*"
+    ],
+    "DefaultPopupsSetting": 2,
+    "AutofillAddressEnabled": false,
+    "AutofillCreditCardEnabled": false,
+    "PasswordManagerEnabled": false,
+    "DefaultNotificationsSetting": 2,
+    "TrackingPrevention": 2,
+    "SmartScreenEnabled": true,
+    "SmartScreenPuaEnabled": true,
+    "SmartScreenForTrustedDownloadsEnabled": false,
+    "PreventSmartScreenPromptOverride": true,
+    "PreventSmartScreenPromptOverrideForFiles": true,
+    "SitePerProcess": true,
+    "SSLErrorOverrideAllowed": false,
+    "DefaultSearchProviderEnabled": true,
+    "BrowserSignin": 0,
+    "SyncDisabled": false,
+    "DefaultGeolocationSetting": 2,
+    "DefaultWebBluetoothGuardSetting": 2,
+    "DefaultWebUsbGuardSetting": 2,
+    "AllowDeletingBrowserHistory": false,
+    "IncognitoModeAvailability": 1
+  },
+  "assignments": [
+    {
+      "target": {
+        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+      }
+    }
+  ]
+}
