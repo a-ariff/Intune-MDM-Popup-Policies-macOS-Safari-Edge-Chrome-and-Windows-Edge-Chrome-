@@ -4,7 +4,7 @@
   "description": "Microsoft Edge popup blocking configuration for Windows devices managed by Intune",
   "settings": {
     "PopupsAllowedForUrls": [
-      "https://example.com"
+      "https://ww6.autotask.net"
     ],
     "PopupsBlockedForUrls": [
       "*"
@@ -34,8 +34,3 @@
   "assignments": [
     {
       "target": {
-        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
-      }
-    }
-  ]
-}
