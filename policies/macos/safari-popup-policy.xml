@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadDisplayName</key>
+            <string>Safari Popup Blocker</string>
+            <key>PayloadIdentifier</key>
+            <string>com.apple.Safari.PopupBlocking</string>
+            <key>PayloadType</key>
+            <string>com.apple.Safari</string>
+            <key>PayloadUUID</key>
+            <string>12345678-1234-5678-9ABC-123456789ABC</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>CanLoadPlugins</key>
+            <false/>
+            <key>PopupBlocking</key>
+            <true/>
+            <key>WebKitJavaScriptCanOpenWindowsAutomatically</key>
+            <false/>
+            <key>WebKitJavaScriptEnabled</key>
+            <true/>
+            <key>ExtensionsEnabled</key>
+            <false/>
+            <key>AutoFillFromAddressBook</key>
+            <false/>
+            <key>AutoFillCreditCardData</key>
+            <false/>
+            <key>AutoFillMiscellaneousForms</key>
+            <false/>
+            <key>SendDoNotTrackHTTPHeader</key>
+            <true/>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Safari popup blocking configuration for macOS devices</string>
+    <key>PayloadDisplayName</key>
+    <string>Safari Popup Policy</string>
+    <key>PayloadIdentifier</key>
+    <string>com.company.safari.popup.policy</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>87654321-4321-8765-CBA9-987654321CBA</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>
