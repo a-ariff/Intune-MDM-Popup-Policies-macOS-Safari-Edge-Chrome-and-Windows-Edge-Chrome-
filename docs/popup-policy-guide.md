@@ -1,10 +1,8 @@
 ---
-title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrome, Edge, and Safari via Intune"
+title: "Intune Browser Pop-up Policy Guide"
 ---
-# Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrome, Edge, and Safari via Intune
-
+# Intune Browser Pop-up Policy Guide
 **Table of Contents**
-
 - [macOS Chrome (JSON)](#macos-chrome-json)
 - [macOS Chrome (plist)](#macos-chrome-plist)
 - [macOS Edge (JSON)](#macos-edge-json)
@@ -18,9 +16,7 @@ title: "Complete Guide — Allowing Specific Pop-ups (Block All Others) in Chrom
 ---
 
 ## macOS Chrome (JSON)
-
 This configuration blocks pop-ups on all websites and prevents users from changing the permission. Only domains in PopupsAllowedForUrls are permitted.
-
 ```json
 {
   "@odata.type": "#microsoft.graph.macOSOfficeSuiteApp",
@@ -33,9 +29,7 @@ This configuration blocks pop-ups on all websites and prevents users from changi
   }
 }
 ```
-
 **Deploy via Settings Catalog**
-
 1. In Intune Admin Center → Devices → Configuration profiles → Create profile
 2. Platform: **macOS**, Profile type: **Settings catalog**
 3. Add settings for **Google Chrome**:
@@ -48,174 +42,4 @@ Verify on device via chrome://policy.
 ---
 
 ## macOS Chrome (plist)
-
 This keeps Chrome's default popup behavior but explicitly allows pop-ups on the listed sites. You can verify applied policy in chrome://policy.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>PayloadContent</key>
-    <array>
-        <dict>
-            <key>PayloadDisplayName</key>
-            <string>Chrome Popup Policy</string>
-            <key>PayloadIdentifier</key>
-            <string>com.google.Chrome.popup</string>
-            <key>PayloadType</key>
-            <string>com.google.Chrome</string>
-            <key>PayloadUUID</key>
-            <string>12345678-1234-1234-1234-123456789012</string>
-            <key>PayloadVersion</key>
-            <integer>1</integer>
-            <key>PopupsAllowedForUrls</key>
-            <array>
-                <string>https://your-allowed-domain.example</string>
-            </array>
-            <key>DefaultPopupsSetting</key>
-            <integer>2</integer>
-        </dict>
-    </array>
-    <key>PayloadDisplayName</key>
-    <string>Chrome Popup Blocker</string>
-    <key>PayloadIdentifier</key>
-    <string>com.company.chrome.popup</string>
-    <key>PayloadType</key>
-    <string>Configuration</string>
-    <key>PayloadUUID</key>
-    <string>87654321-4321-4321-4321-210987654321</string>
-    <key>PayloadVersion</key>
-    <integer>1</integer>
-</dict>
-</plist>
-```
-
----
-
-## macOS Edge (JSON)
-
-```json
-{
-  "@odata.type": "#microsoft.graph.macOSOfficeSuiteApp",
-  "displayName": "Edge Popup Blocker Policy - macOS",
-  "bundleId": "com.microsoft.edgemac",
-  "settings": {
-    "DefaultPopupsSetting": 2,
-    "PopupsAllowedForUrls": ["https://your-allowed-domain.example"],
-    "PopupsBlockedForUrls": ["*"]
-  }
-}
-```
-
----
-
-## macOS Safari (XML)
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>PayloadContent</key>
-    <array>
-        <dict>
-            <key>PayloadDisplayName</key>
-            <string>Safari Popup Policy</string>
-            <key>PayloadIdentifier</key>
-            <string>com.apple.Safari.popup</string>
-            <key>PayloadType</key>
-            <string>com.apple.Safari</string>
-            <key>PayloadUUID</key>
-            <string>12345678-1234-1234-1234-123456789012</string>
-            <key>PayloadVersion</key>
-            <integer>1</integer>
-            <key>PopupBlocking</key>
-            <true/>
-            <key>AllowedPopupDomains</key>
-            <array>
-                <string>your-allowed-domain.example</string>
-            </array>
-        </dict>
-    </array>
-    <key>PayloadDisplayName</key>
-    <string>Safari Popup Blocker</string>
-    <key>PayloadIdentifier</key>
-    <string>com.company.safari.popup</string>
-    <key>PayloadType</key>
-    <string>Configuration</string>
-    <key>PayloadUUID</key>
-    <string>87654321-4321-4321-4321-210987654321</string>
-    <key>PayloadVersion</key>
-    <integer>1</integer>
-</dict>
-</plist>
-```
-
----
-
-## Windows Chrome (JSON)
-
-```json
-{
-  "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
-  "displayName": "Chrome Popup Blocker Policy - Windows",
-  "settings": {
-    "DefaultPopupsSetting": 2,
-    "PopupsAllowedForUrls": ["https://your-allowed-domain.example"],
-    "PopupsBlockedForUrls": ["*"]
-  }
-}
-```
-
----
-
-## Windows Edge (JSON)
-
-```json
-{
-  "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
-  "displayName": "Edge Popup Blocker Policy - Windows",
-  "settings": {
-    "DefaultPopupsSetting": 2,
-    "PopupsAllowedForUrls": ["https://your-allowed-domain.example"],
-    "PopupsBlockedForUrls": ["*"]
-  }
-}
-```
-
----
-
-## Keys Reference
-
-| Browser / Platform | Allow Key               | Block Key               | Default Key            |
-|--------------------|-------------------------|-------------------------|------------------------|
-| Chrome & Edge      | PopupsAllowedForUrls    | PopupsBlockedForUrls    | DefaultPopupsSetting   |
-| Safari (macOS)     | AllowedPopupDomains     | N/A                     | PopupBlocking          |
-
----
-
-## Step-by-Step Deployment
-
-1. **Settings Catalog (Windows/macOS Chrome & Edge)**
-   - Create profile → Settings catalog
-   - Select browser → configure keys as above
-   - Assign and deploy → verify via `chrome://policy` or `edge://policy`
-
-2. **Custom Profile (macOS plist & XML)**
-   - Create profile → Custom
-   - Upload plist (Chrome) or XML (Safari)
-   - Assign and deploy → verify in browser or Safari Profiles/Settings
-
----
-
-## Troubleshooting & Verification
-
-- **Verify on device**:
-- `chrome://policy` or `edge://policy` for JSON profiles
-- System Preferences → Profiles (macOS) for XML/plist
-
-- **Common fixes**:
-- Confirm device enrollment & group assignment
-- Force sync or restart browser/device
-- Check syntax with `jq` (JSON) or `xmllint` (XML)
