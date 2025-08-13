@@ -6,7 +6,7 @@
   <integer>2</integer>
   <key>PopupsAllowedForUrls</key>
   <array>
-    <string>https://ww6.autotask.net</string>
+    <string>https://your-allowed-domain.example</string>
   </array>
 </dict>
 </plist>
