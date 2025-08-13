@@ -56,20 +56,40 @@ This keeps Chrome's default popup behavior but explicitly allows pop-ups on the 
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>PopupsAllowedForUrls</key>
-  <array>
-    <string>https://your-allowed-domain.example</string>
-  </array>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadDisplayName</key>
+            <string>Chrome Popup Policy</string>
+            <key>PayloadIdentifier</key>
+            <string>com.google.Chrome.popup</string>
+            <key>PayloadType</key>
+            <string>com.google.Chrome</string>
+            <key>PayloadUUID</key>
+            <string>12345678-1234-1234-1234-123456789012</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PopupsAllowedForUrls</key>
+            <array>
+                <string>https://your-allowed-domain.example</string>
+            </array>
+            <key>DefaultPopupsSetting</key>
+            <integer>2</integer>
+        </dict>
+    </array>
+    <key>PayloadDisplayName</key>
+    <string>Chrome Popup Blocker</string>
+    <key>PayloadIdentifier</key>
+    <string>com.company.chrome.popup</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>87654321-4321-4321-4321-210987654321</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
 </dict>
 </plist>
 ```
-
-**Deploy via Custom Profile (macOS)**
-
-1. In Intune Admin Center → Devices → Configuration profiles → Create profile
-2. Platform: **macOS**, Profile type: **Custom**
-3. Upload the plist file above, set Bundle ID: `com.google.Chrome`
-4. Assign and deploy → verify in chrome://policy
 
 ---
 
@@ -79,7 +99,7 @@ This keeps Chrome's default popup behavior but explicitly allows pop-ups on the 
 {
   "@odata.type": "#microsoft.graph.macOSOfficeSuiteApp",
   "displayName": "Edge Popup Blocker Policy - macOS",
-  "bundleId": "com.microsoft.Edge",
+  "bundleId": "com.microsoft.edgemac",
   "settings": {
     "DefaultPopupsSetting": 2,
     "PopupsAllowedForUrls": ["https://your-allowed-domain.example"],
@@ -97,24 +117,40 @@ This keeps Chrome's default popup behavior but explicitly allows pop-ups on the 
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>PopupBlocking</key>
-  <true/>
-  <key>AllowedPopupDomains</key>
-  <array>
-    <string>your-allowed-domain.example</string>
-  </array>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadDisplayName</key>
+            <string>Safari Popup Policy</string>
+            <key>PayloadIdentifier</key>
+            <string>com.apple.Safari.popup</string>
+            <key>PayloadType</key>
+            <string>com.apple.Safari</string>
+            <key>PayloadUUID</key>
+            <string>12345678-1234-1234-1234-123456789012</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PopupBlocking</key>
+            <true/>
+            <key>AllowedPopupDomains</key>
+            <array>
+                <string>your-allowed-domain.example</string>
+            </array>
+        </dict>
+    </array>
+    <key>PayloadDisplayName</key>
+    <string>Safari Popup Blocker</string>
+    <key>PayloadIdentifier</key>
+    <string>com.company.safari.popup</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>87654321-4321-4321-4321-210987654321</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
 </dict>
 </plist>
 ```
-
-**Deploy via Custom Profile (macOS)**
-
-1. In Intune Admin Center → Devices → Configuration profiles → Create profile
-2. Platform: **macOS**, Profile type: **Custom**
-3. Upload the XML file above, set Bundle ID: `com.apple.Safari`
-4. Assign and deploy → verify in Safari Preferences/Settings
-
-**Optional:** If MDM profiles cannot be used, you can apply an allow entry via script. See scripts/Set-SafariPopupAllow.zsh (uses your-allowed-domain.example placeholder). Note: DB edits are brittle—prefer MDM profiles when possible.
 
 ---
 
@@ -178,13 +214,8 @@ This keeps Chrome's default popup behavior but explicitly allows pop-ups on the 
 - **Verify on device**:
 - `chrome://policy` or `edge://policy` for JSON profiles
 - System Preferences → Profiles (macOS) for XML/plist
+
 - **Common fixes**:
 - Confirm device enrollment & group assignment
 - Force sync or restart browser/device
 - Check syntax with `jq` (JSON) or `xmllint` (XML)
-
----
-
-After that, your guide will be live at:
-
-`https://a-ariff.github.io/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/popup-policy-guide.html`
