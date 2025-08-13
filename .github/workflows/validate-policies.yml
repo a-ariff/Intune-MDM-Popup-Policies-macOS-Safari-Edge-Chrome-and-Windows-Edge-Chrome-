@@ -1,0 +1,49 @@
+name: Validate JSON/XML Policies
+
+on:
+  pull_request:
+    paths:
+      - '**/*.json'
+      - '**/*.xml'
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.json'
+      - '**/*.xml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Policy Files
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install JSON validator
+        run: npm install -g jsonlint
+        
+      - name: Install XML validator
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+        
+      - name: Validate JSON files
+        run: |
+          echo "Validating JSON files..."
+          find . -name "*.json" -type f | while read file; do
+            echo "Checking $file"
+            jsonlint "$file" || exit 1
+          done
+          
+      - name: Validate XML files
+        run: |
+          echo "Validating XML files..."
+          find . -name "*.xml" -type f | while read file; do
+            echo "Checking $file"
+            xmllint --noout "$file" || exit 1
+          done
