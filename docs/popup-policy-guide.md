@@ -5,7 +5,6 @@ title: "Intune Browser Pop-up Policy Guide"
 # Intune Browser Pop-up Policy Guide
 
 **Table of Contents**
-
 - [macOS Chrome (JSON)](#macos-chrome-json)
 - [macOS Chrome (plist)](#macos-chrome-plist)
 - [macOS Edge (JSON)](#macos-edge-json)
@@ -90,6 +89,50 @@ This keeps Chrome's default popup behavior but explicitly allows pop-ups on the 
 </plist>
 ```
 
+### Alternative: Minimal plist (allow specific sites only)
+
+This minimal configuration only sets PopupsAllowedForUrls without enforcing DefaultPopupsSetting, relying on Chrome's default popup blocking behavior.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>PayloadDisplayName</key>
+      <string>Chrome Popup Allow List</string>
+      <key>PayloadIdentifier</key>
+      <string>com.google.Chrome.popup-allowlist</string>
+      <key>PayloadType</key>
+      <string>com.google.Chrome</string>
+      <key>PayloadUUID</key>
+      <string>REPLACE_WITH_GENERATED_UUID</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>PopupsAllowedForUrls</key>
+      <array>
+        <string>https://ww6.autotask.net</string>
+      </array>
+    </dict>
+  </array>
+  <key>PayloadDisplayName</key>
+  <string>Chrome Popup Allow List</string>
+  <key>PayloadIdentifier</key>
+  <string>chrome.popup.allowlist</string>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>REPLACE_WITH_GENERATED_UUID</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>
+```
+
+**Note:** This approach does not enforce DefaultPopupsSetting and relies on Chrome's default behavior. For fully enforced popup blocking with exceptions, use JSON/Settings Catalog configuration instead.
+
 ---
 
 ## macOS Edge (JSON)
@@ -171,15 +214,15 @@ This blocks pop-ups on all websites except those explicitly allowed.
 
 Use Intune Settings Catalog templates for Chrome or ADMX-backed templates:
 
-1. **Create profile** → Devices → Configuration profiles → Create profile
-2. Platform: **Windows 10 and later**, Profile type: **Templates**
-3. Select **Administrative Templates**
-4. **Select Chrome** (Google Chrome or Microsoft Edge)
-5. **Configure popup settings keys**:
+1. Create profile → Devices → Configuration profiles → Create profile
+2. Platform: Windows 10 and later, Profile type: Templates
+3. Select Administrative Templates
+4. Select Chrome (Google Chrome or Microsoft Edge)
+5. Configure popup settings keys:
    - Navigate to Chrome/Edge policies
-   - Set **Default pop-up setting** = Block (2)
-   - Configure **Pop-ups allowed for URLs** = `https://your-allowed-domain.example`
-   - Configure **Pop-ups blocked for URLs** = `*`
+   - Set Default pop-up setting = Block (2)
+   - Configure Pop-ups allowed for URLs = https://your-allowed-domain.example
+   - Configure Pop-ups blocked for URLs = *
 
 The JSON method above remains available as an alternative deployment approach.
 
@@ -203,15 +246,15 @@ This blocks pop-ups on all websites except those explicitly allowed.
 
 Use Intune Settings Catalog templates for Edge or ADMX-backed templates:
 
-1. **Create profile** → Devices → Configuration profiles → Create profile
-2. Platform: **Windows 10 and later**, Profile type: **Templates**
-3. Select **Administrative Templates**
-4. **Select Edge** (Microsoft Edge)
-5. **Configure popup settings keys**:
+1. Create profile → Devices → Configuration profiles → Create profile
+2. Platform: Windows 10 and later, Profile type: Templates
+3. Select Administrative Templates
+4. Select Edge (Microsoft Edge)
+5. Configure popup settings keys:
    - Navigate to Edge policies
-   - Set **Default pop-up setting** = Block (2)
-   - Configure **Pop-ups allowed for URLs** = `https://your-allowed-domain.example`
-   - Configure **Pop-ups blocked for URLs** = `*`
+   - Set Default pop-up setting = Block (2)
+   - Configure Pop-ups allowed for URLs = https://your-allowed-domain.example
+   - Configure Pop-ups blocked for URLs = *
 
 The JSON method above remains available as an alternative deployment approach.
 
@@ -221,15 +264,15 @@ The JSON method above remains available as an alternative deployment approach.
 
 ### Popup Settings Values
 
-• 0 = Allow all pop-ups
-• 1 = Block all pop-ups (default)
-• 2 = Block all pop-ups (enforced)
+- 0 = Allow all pop-ups
+- 1 = Block all pop-ups (default)
+- 2 = Block all pop-ups (enforced)
 
 ### URL Format Examples
 
-• https://example.com - Specific domain
-• https://*.example.com - All subdomains
-• * - All websites (wildcard)
+- https://example.com - Specific domain
+- https://*.example.com - All subdomains
+- * - All websites (wildcard)
 
 ---
 
@@ -237,9 +280,9 @@ The JSON method above remains available as an alternative deployment approach.
 
 ### 1. Prepare Your Configuration
 
-• Choose the appropriate configuration for your platform
-• Replace placeholder domains with your actual allowed sites
-• Generate UUIDs where required (see [Generate a UUID](#generate-a-uuid) section)
+- Choose the appropriate configuration for your platform
+- Replace placeholder domains with your actual allowed sites
+- Generate UUIDs where required (see [Generate a UUID](#generate-a-uuid) section)
 
 ### 2. Deploy via Intune
 
@@ -253,9 +296,9 @@ The JSON method above remains available as an alternative deployment approach.
 
 ### 3. Monitor Deployment
 
-• Check deployment status in Intune
-• Verify policy application on test devices
-• Monitor for any deployment failures
+- Check deployment status in Intune
+- Verify policy application on test devices
+- Monitor for any deployment failures
 
 ### Generate a UUID
 
