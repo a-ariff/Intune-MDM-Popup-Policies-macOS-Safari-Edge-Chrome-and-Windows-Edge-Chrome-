@@ -6,11 +6,6 @@ title: "Intune Browser Pop-up Policy Guide"
 
 # Intune Browser Pop-up Policy Guide
 
-## Status
-
-[![Lint](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/workflows/Lint/badge.svg)](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/lint.yml)
-[![Pages](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/workflows/Pages/badge.svg)](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/pages.yml)
-
 > **⚠️ IMPORTANT:** Before deploying any of these policies, make sure to replace all example domains (like `your-allowed-domain.example`) with your actual domain names. Failing to do so will result in non-functional popup policies.
 
 **Table of Contents**
@@ -44,13 +39,3 @@ This configuration blocks pop-ups on all websites and prevents users from changi
 ```
 
 ### Multi-Domain Allow-list Example
-
-For organizations that need to allow pop-ups on multiple domains:
-
-```json
-{
-  "@odata.type": "#microsoft.graph.macOSOfficeSuiteApp",
-  "displayName": "Chrome Popup Blocker Policy - macOS (Multi-Domain)",
-  "bundleId": "com.google.Chrome",
-  "settings": {
-    "DefaultPopupsSetting": 2,
