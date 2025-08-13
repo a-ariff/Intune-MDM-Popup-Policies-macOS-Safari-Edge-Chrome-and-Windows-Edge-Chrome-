@@ -2,6 +2,8 @@
 title: "Intune Browser Pop-up Policy Guide"
 ---
 
+> **ℹ️ NOTE:** Workflow status badges and icons reflect only the main branch. If not visible here, check the README on the main repository page for build status.
+
 ![Repository Icon](assets/icon.svg)
 
 # Intune Browser Pop-up Policy Guide
