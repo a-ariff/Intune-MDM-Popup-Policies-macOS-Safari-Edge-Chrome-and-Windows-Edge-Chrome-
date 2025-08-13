@@ -1,10 +1,10 @@
 ---
 title: "Intune Browser Pop-up Policy Guide"
 ---
-
 # Intune Browser Pop-up Policy Guide
 
 **Table of Contents**
+
 - [macOS Chrome (JSON)](#macos-chrome-json)
 - [macOS Chrome (plist)](#macos-chrome-plist)
 - [macOS Edge (JSON)](#macos-edge-json)
@@ -113,7 +113,7 @@ This minimal configuration only sets PopupsAllowedForUrls without enforcing Defa
       <integer>1</integer>
       <key>PopupsAllowedForUrls</key>
       <array>
-        <string>https://ww6.autotask.net</string>
+        <string>https://your-allowed-domain.example</string>
       </array>
     </dict>
   </array>
@@ -264,15 +264,15 @@ The JSON method above remains available as an alternative deployment approach.
 
 ### Popup Settings Values
 
-- 0 = Allow all pop-ups
-- 1 = Block all pop-ups (default)
-- 2 = Block all pop-ups (enforced)
+- **0** = Allow all pop-ups
+- **1** = Block all pop-ups (default)
+- **2** = Block all pop-ups (enforced)
 
 ### URL Format Examples
 
-- https://example.com - Specific domain
-- https://*.example.com - All subdomains
-- * - All websites (wildcard)
+- `https://example.com` - Specific domain
+- `https://*.example.com` - All subdomains
+- `*` - All websites (wildcard)
 
 ---
 
