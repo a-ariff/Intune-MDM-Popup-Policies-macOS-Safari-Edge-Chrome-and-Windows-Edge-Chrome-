@@ -73,78 +73,71 @@ begin {
             [string[]]$BlockedSites = @()
         )
 
-        # Base configuration hashtable
         $config = @{}
 
-        # Browser-specific schema configuration
         switch ($Browser) {
             'Safari' {
-                # Safari popup configuration for macOS
-                $config['com.apple.Safari.SandBoxed'] = @{
-                    'BlockPopups' = ($PopupAction -eq 'Block')
-                }
-
+                # Safari configuration for macOS
+                $config['DefaultPopupsSetting'] = if ($PopupAction -eq 'Allow') { 1 } else { 2 }
                 if ($AllowedSites.Count -gt 0) {
-                    $config['com.apple.Safari.PopupExceptions'] = $AllowedSites
+                    $config['PopupsAllowedForUrls'] = $AllowedSites
                 }
-
-                Write-Information -MessageData "Safari configuration prepared with BlockPopups=$($PopupAction -eq 'Block')" -InformationAction Continue
+                if ($BlockedSites.Count -gt 0) {
+                    $config['PopupsBlockedForUrls'] = $BlockedSites
+                }
             }
             'Edge' {
-                # Microsoft Edge popup configuration
-                $config['DefaultPopupsSetting'] = if ($PopupAction -eq 'Block') { 2 } else { 1 }
-
+                # Microsoft Edge configuration (Windows/macOS)
+                $config['DefaultPopupsSetting'] = if ($PopupAction -eq 'Allow') { 1 } else { 2 }
                 if ($AllowedSites.Count -gt 0) {
                     $config['PopupsAllowedForUrls'] = $AllowedSites
                 }
                 if ($BlockedSites.Count -gt 0) {
                     $config['PopupsBlockedForUrls'] = $BlockedSites
                 }
-
-                Write-Information -MessageData "Edge configuration prepared with DefaultPopupsSetting=$($config['DefaultPopupsSetting'])" -InformationAction Continue
             }
             'Chrome' {
-                # Google Chrome popup configuration
-                $config['DefaultPopupsSetting'] = if ($PopupAction -eq 'Block') { 2 } else { 1 }
-
+                # Google Chrome configuration (Windows/macOS)
+                $config['DefaultPopupsSetting'] = if ($PopupAction -eq 'Allow') { 1 } else { 2 }
                 if ($AllowedSites.Count -gt 0) {
                     $config['PopupsAllowedForUrls'] = $AllowedSites
                 }
                 if ($BlockedSites.Count -gt 0) {
                     $config['PopupsBlockedForUrls'] = $BlockedSites
                 }
-
-                Write-Information -MessageData "Chrome configuration prepared with DefaultPopupsSetting=$($config['DefaultPopupsSetting'])" -InformationAction Continue
             }
         }
 
         return $config
     }
-
-    # Determine target browsers based on platform
-    $targetBrowsers = switch ($Platform) {
-        'macOS' { @('Safari', 'Edge', 'Chrome') }
-        'Windows' { @('Edge', 'Chrome') }
-        'Both' { @('Safari', 'Edge', 'Chrome') }
-    }
-
-    Write-Information -MessageData "Target browsers: $($targetBrowsers -join ', ')" -InformationAction Continue
 }
 process {
     try {
-        # Initialize policies collection
-        $policies = @()
+        # Determine target browsers based on platform
+        $targetBrowsers = switch ($Platform) {
+            'macOS' { @('Safari', 'Edge', 'Chrome') }
+            'Windows' { @('Edge', 'Chrome') }
+            'Both' { @('Safari', 'Edge', 'Chrome') }
+        }
+
+        Write-Information -MessageData "Target browsers: $($targetBrowsers -join ', ')" -InformationAction Continue
 
         # Validate input parameters
-        if ([string]::IsNullOrWhiteSpace($PolicyName)) {
+        if (-not $PolicyName) {
             throw "PolicyName cannot be null or empty"
         }
 
-        Write-Information -MessageData "Creating popup policy: $PolicyName" -InformationAction Continue
-        Write-Information -MessageData "Description: $Description" -InformationAction Continue
+        # Confirm action if not using WhatIf
+        $confirmMessage = "Creating popup policy '$PolicyName' with action '$PopupAction' for platform '$Platform'"
+        if ($AllowedSites.Count -gt 0) {
+            $confirmMessage += ". Allowed sites: $($AllowedSites -join ', ')"
+        }
+        if ($BlockedSites.Count -gt 0) {
+            $confirmMessage += ". Blocked sites: $($BlockedSites -join ', ')"
+        }
 
-        # Process policy creation
-        if ($PSCmdlet.ShouldProcess($PolicyName, "Create Intune popup policy")) {
+        if ($PSCmdlet.ShouldProcess($confirmMessage, "Create Intune Popup Policy")) {
+            $policies = @()
 
             # Create policy configurations for each browser
             foreach ($browser in $targetBrowsers) {
@@ -154,14 +147,12 @@ process {
                 if ($browser -eq 'Safari' -and $Platform -eq 'Windows') {
                     continue
                 }
-
                 $browserConfig = Get-BrowserPolicyConfig -Browser $browser -PopupAction $PopupAction -AllowedSites $AllowedSites -BlockedSites $BlockedSites
 
                 # Ensure DefaultPopupsSetting=2 when PopupAction=Block
                 if ($PopupAction -eq 'Block') {
                     $browserConfig['DefaultPopupsSetting'] = 2
                 }
-
                 $policyParams = @{
                     DisplayName = "$PolicyName - $browser"
                     Description = "$Description (Browser: $browser, OS: $os)"
@@ -172,7 +163,6 @@ process {
                     AllowedSites = $AllowedSites
                     BlockedSites = $BlockedSites
                 }
-
                 Write-Information -MessageData "Policy parameters prepared for $browser on $os" -InformationAction Continue
                 Write-Information -MessageData "Configuration: $($browserConfig | ConvertTo-Json -Compress)" -InformationAction Continue
 
@@ -187,10 +177,8 @@ process {
                     Status = "Created"
                     Timestamp = Get-Date
                 }
-
                 $policies += $policy
             }
-
             Write-Information -MessageData "Policy creation completed successfully for $($policies.Count) browser configurations" -InformationAction Continue
 
             # Return policy collection
