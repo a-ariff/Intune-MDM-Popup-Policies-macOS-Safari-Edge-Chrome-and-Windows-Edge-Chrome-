@@ -1,4 +1,5 @@
 ![Repository Icon](docs/assets/icon.svg)
+
 # Intune MDM Popup Policies
 
 [![PowerShell Lint](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/ps-lint.yml?branch=main)
