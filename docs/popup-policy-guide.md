@@ -4,8 +4,8 @@ title: "Intune Browser Pop-up Policy Guide"
 
 ![Repository Icon](assets/icon.svg)
 
-[![PowerShell Lint](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/ps-lint.yml?branch=main)
-[![Validate Policies](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/validate-policies.yml/badge.svg?branch=main)](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/actions/workflows/validate-policies.yml?branch=main)
+[![PowerShell Lint](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/ps-lint.yml?branch=main)
+[![Validate Policies](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/validate-policies.yml/badge.svg?branch=main)](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/validate-policies.yml?branch=main)
 
 # Intune Browser Pop-up Policy Guide
 
@@ -61,8 +61,6 @@ This configuration blocks pop-ups on all websites and prevents users from changi
 }
 ```
 
----
-
 ## macOS Chrome (plist)
 
 Alternative plist format for macOS Chrome configuration.
@@ -111,8 +109,6 @@ Alternative plist format for macOS Chrome configuration.
 </plist>
 ```
 
----
-
 ## macOS Edge (JSON)
 
 Microsoft Edge configuration for macOS.
@@ -129,8 +125,6 @@ Microsoft Edge configuration for macOS.
   }
 }
 ```
-
----
 
 ## macOS Safari (XML)
 
@@ -174,8 +168,6 @@ Safari configuration profile for macOS.
 </plist>
 ```
 
----
-
 ## Windows Chrome (JSON)
 
 Chrome configuration for Windows devices.
@@ -209,8 +201,6 @@ Chrome configuration for Windows devices.
 }
 ```
 
----
-
 ## Windows Edge (JSON)
 
 Microsoft Edge configuration for Windows devices.
@@ -228,55 +218,53 @@ Microsoft Edge configuration for Windows devices.
 }
 ```
 
----
-
 ## Keys Reference
 
 ### DefaultPopupsSetting Values
-- `1`: Allow all sites to show pop-ups
-- `2`: Block all sites from showing pop-ups (recommended)
-- `3`: Ask user when a site wants to show pop-ups
+
+- **1**: Allow all sites to show pop-ups
+- **2**: Block all sites from showing pop-ups (recommended)
+- **3**: Ask user when a site wants to show pop-ups
 
 ### URL Pattern Examples
+
 - `"*"`: All URLs
 - `"https://*"`: All HTTPS URLs
 - `"https://example.com"`: Specific domain
 - `"https://*.example.com"`: All subdomains of example.com
 - `"https://example.com/*"`: All pages on example.com
 
----
-
 ## Step-by-Step Deployment
 
 ### For macOS Devices:
 
 1. **Open Microsoft Endpoint Manager**
-   - Navigate to [https://endpoint.microsoft.com](https://endpoint.microsoft.com)
+   - Navigate to https://endpoint.microsoft.com
    - Sign in with your admin credentials
 
 2. **Create Configuration Profile**
-   - Go to **Devices** > **Configuration profiles**
-   - Click **+ Create profile**
-   - Select **Platform**: macOS
-   - Select **Profile type**: Custom
+   - Go to Devices > Configuration profiles
+   - Click + Create profile
+   - Select Platform: macOS
+   - Select Profile type: Custom
 
 3. **Configure Settings**
-   - Enter a **Name** and **Description**
-   - In **Configuration settings**, upload your plist file or paste the JSON configuration
+   - Enter a Name and Description
+   - In Configuration settings, upload your plist file or paste the JSON configuration
    - **IMPORTANT**: Replace `your-allowed-domain.example` with your actual domains
 
 4. **Assign to Groups**
-   - Go to **Assignments**
+   - Go to Assignments
    - Select the device groups or users to target
    - Review and create the policy
 
 ### For Windows Devices:
 
 1. **Create Device Configuration**
-   - Go to **Devices** > **Configuration profiles**
-   - Click **+ Create profile**
-   - Select **Platform**: Windows 10 and later
-   - Select **Profile type**: Administrative Templates
+   - Go to Devices > Configuration profiles
+   - Click + Create profile
+   - Select Platform: Windows 10 and later
+   - Select Profile type: Administrative Templates
 
 2. **Configure Browser Settings**
    - Navigate to browser-specific settings (Chrome/Edge)
@@ -287,20 +275,19 @@ Microsoft Edge configuration for Windows devices.
    - Assign to appropriate groups
    - Monitor compliance and deployment status
 
----
-
 ## Troubleshooting & Verification
 
 ### Verification Steps:
 
 1. **Check Policy Application**
-   ```bash
-   # macOS Chrome
-   defaults read com.google.Chrome DefaultPopupsSetting
-   
-   # macOS Edge
-   defaults read com.microsoft.edgemac DefaultPopupsSetting
-   ```
+
+```bash
+# macOS Chrome
+defaults read com.google.Chrome DefaultPopupsSetting
+
+# macOS Edge
+defaults read com.microsoft.edgemac DefaultPopupsSetting
+```
 
 2. **Browser Verification**
    - Open browser settings
