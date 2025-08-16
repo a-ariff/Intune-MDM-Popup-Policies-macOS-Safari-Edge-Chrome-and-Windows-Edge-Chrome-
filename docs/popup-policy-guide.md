@@ -1,13 +1,12 @@
 ---
-title: "Intune Browser Pop-up Policy Guide"
+title: "Browser Popup MDM Automation Guide"
 ---
 
 ![Repository Icon](assets/icon.svg)
 
-[![PowerShell Lint](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/ps-lint.yml?branch=main)
-[![Validate Policies](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/validate-policies.yml/badge.svg?branch=main)](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/validate-policies.yml?branch=main)
+[![PowerShell Lint](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/ps-lint.yml?branch=main) [![Validate Policies](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/validate-policies.yml/badge.svg?branch=main)](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/validate-policies.yml?branch=main)
 
-# Intune Browser Pop-up Policy Guide
+# Browser Popup MDM Automation Guide
 
 > **⚠️ IMPORTANT:** Before deploying any of these policies, make sure to replace all example domains (like `your-allowed-domain.example`) with your actual domain names. Failing to do so will result in non-functional popup policies.
 
@@ -228,11 +227,11 @@ Microsoft Edge configuration for Windows devices.
 
 ### URL Pattern Examples
 
-- `"*"`: All URLs
-- `"https://*"`: All HTTPS URLs
-- `"https://example.com"`: Specific domain
-- `"https://*.example.com"`: All subdomains of example.com
-- `"https://example.com/*"`: All pages on example.com
+- **"*"**: All URLs
+- **"https://*"**: All HTTPS URLs
+- **"https://example.com"**: Specific domain
+- **"https://*.example.com"**: All subdomains of example.com
+- **"https://example.com/*"**: All pages on example.com
 
 ## Step-by-Step Deployment
 
@@ -317,6 +316,4 @@ sudo log show --predicate 'subsystem == "com.apple.ManagedClient"' --last 1h
 # Navigate to: Applications and Services Logs > Microsoft > Windows > DeviceManagement-Enterprise-Diagnostics-Provider
 ```
 
----
-
-*Last updated: 2024*
+Last updated: 2024
