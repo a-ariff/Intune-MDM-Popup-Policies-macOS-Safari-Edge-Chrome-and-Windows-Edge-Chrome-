@@ -1,18 +1,17 @@
 ![Repository Icon](docs/assets/icon.svg)
-# Intune MDM Popup Policies for Mac and Windows
 
-[![PowerShell Lint](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/ps-lint.yml?branch=main)
-[![Validate Policies](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/validate-policies.yml/badge.svg?branch=main)](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/actions/workflows/validate-policies.yml?branch=main)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Browser Popup MDM Automation
+
+[![PowerShell Lint](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/ps-lint.yml/badge.svg?branch=main)](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/ps-lint.yml?branch=main) [![Validate Policies](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/validate-policies.yml/badge.svg?branch=main)](https://github.com/a-ariff/browser-popup-mdm-automation/actions/workflows/validate-policies.yml?branch=main) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Comprehensive cross-platform Microsoft Intune MDM popup policy templates and automation scripts for browser management on macOS and Windows endpoints.
 
-📄 **Complete Deployment Guide:** [View on GitHub](docs/popup-policy-guide.md) | [View on GitHub Pages](https://a-ariff.github.io/intune-mdm-popup-policies-for-mac-and-windows/popup-policy-guide) - Essential setup and configuration instructions
+📄 **Complete Deployment Guide:** [View on GitHub](docs/popup-policy-guide.md) | [View on GitHub Pages](https://a-ariff.github.io/browser-popup-mdm-automation/popup-policy-guide) - Essential setup and configuration instructions
 
 ## Overview
 
 - **Platforms**: macOS (Safari, Edge, Chrome) | Windows (Edge, Chrome)
-- **Default**: Block-all with allow-list examples
+- **Default**: Block-all with allow-list examples  
 - **Automation**: PowerShell script injects allow/block lists per browser schema
 - **CI/CD**: GitHub Actions validate PowerShell and policy files
 
@@ -30,19 +29,16 @@ Comprehensive cross-platform Microsoft Intune MDM popup policy templates and aut
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows.git
-cd intune-mdm-popup-policies-for-mac-and-windows
+git clone https://github.com/a-ariff/browser-popup-mdm-automation.git
+cd browser-popup-mdm-automation
 ```
 
 ### 2. Customize Templates
 
 ```bash
 # Edit allow/block lists in policies folder
-
 # macOS Chrome/Edge JSON: PopupsAllowedForUrls, PopupsBlockedForUrls, DefaultPopupsSetting
-
 # Windows Chrome/Edge JSON: Same structure
-
 # macOS Safari XML: PopupsBlockedForUrls, DefaultPopupsSetting
 ```
 
@@ -56,7 +52,7 @@ cd intune-mdm-popup-policies-for-mac-and-windows
 ## Compatibility Matrix
 
 | Platform | Safari | Edge | Chrome | Status |
-|----------|--------|------|--------|---------|
+|----------|--------|------|--------|--------|
 | macOS 11+ | ✅ | ✅ | ✅ | Tested |
 | macOS 10.15 | ✅ | ❌ | ✅ | Partial |
 | Windows 10 | ❌ | ✅ | ✅ | Tested |
@@ -66,7 +62,7 @@ cd intune-mdm-popup-policies-for-mac-and-windows
 ## Repository Structure
 
 ```
-Intune-MDM-Popup-Policies/
+Browser-Popup-MDM-Automation/
 ├── scripts/
 │   └── New-IntunePopupPolicy.ps1
 ├── policies/
@@ -158,5 +154,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - 📖 [Documentation](docs/popup-policy-guide.md)
-- 🐛 [Issues](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/issues)
-- 💬 [Discussions](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/discussions)
+- 🐛 [Issues](https://github.com/a-ariff/browser-popup-mdm-automation/issues)
+- 💬 [Discussions](https://github.com/a-ariff/browser-popup-mdm-automation/discussions)
