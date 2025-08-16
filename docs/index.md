@@ -12,13 +12,11 @@ The primary documentation and implementation guide for this project is available
 
 ## Resources
 
-- **[Project Repository README](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-/blob/main/README.md)** - Overview and quick reference
+- **[Project Repository README](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows/blob/main/README.md)** - Overview and quick reference
 - **[Popup Policy Guide](/popup-policy-guide)** - Complete implementation documentation
 
 ## About This Site
 
-This documentation site is hosted from the `/docs` folder in the project's main branch using GitHub Pages.
+This documentation site is hosted from the /docs folder in the project's main branch using GitHub Pages.
 
----
-
-*For questions or contributions, please visit the [project repository](https://github.com/a-ariff/Intune-MDM-Popup-Policies-macOS-Safari-Edge-Chrome-and-Windows-Edge-Chrome-).*
+*For questions or contributions, please visit the [project repository](https://github.com/a-ariff/intune-mdm-popup-policies-for-mac-and-windows).*
