@@ -1,0 +1,287 @@
+name: Enterprise Security Scan
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/**'
+      - 'policies/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'scripts/**'
+      - 'policies/**'
+      - '.github/workflows/**'
+  schedule:
+    # Run weekly on Sundays at 02:00 UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+jobs:
+  powershell-security-scan:
+    name: PowerShell Security Analysis
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup PowerShell
+      shell: pwsh
+      run: |
+        Write-Host "PowerShell version: $($PSVersionTable.PSVersion)"
+        Write-Host "OS: $($PSVersionTable.OS)"
+    
+    - name: Install PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -Verbose
+        Get-Module PSScriptAnalyzer -ListAvailable
+    
+    - name: PowerShell Script Analysis
+      shell: pwsh
+      run: |
+        $scriptPath = 'scripts/'
+        if (Test-Path $scriptPath) {
+          $results = Invoke-ScriptAnalyzer -Path $scriptPath -Recurse -ReportSummary -Severity @('Error', 'Warning')
+          
+          if ($results) {
+            Write-Host "## PowerShell Analysis Results" -ForegroundColor Yellow
+            foreach ($result in $results) {
+              Write-Host "[$($result.Severity)] $($result.RuleName): $($result.Message)" -ForegroundColor Red
+              Write-Host "  File: $($result.ScriptPath)" -ForegroundColor Gray
+              Write-Host "  Line: $($result.Line)" -ForegroundColor Gray
+              Write-Host ""
+            }
+            
+            # Fail on errors, warn on warnings
+            $errors = $results | Where-Object { $_.Severity -eq 'Error' }
+            if ($errors.Count -gt 0) {
+              Write-Error "Found $($errors.Count) PowerShell analysis errors. Build failed."
+              exit 1
+            }
+            
+            $warnings = $results | Where-Object { $_.Severity -eq 'Warning' }
+            if ($warnings.Count -gt 0) {
+              Write-Warning "Found $($warnings.Count) PowerShell analysis warnings."
+            }
+          } else {
+            Write-Host "✅ No PowerShell analysis issues found" -ForegroundColor Green
+          }
+        } else {
+          Write-Host "No PowerShell scripts found in scripts/ directory" -ForegroundColor Yellow
+        }
+    
+    - name: Security Rule Compliance Check
+      shell: pwsh
+      run: |
+        Write-Host "## Enterprise Security Compliance Check" -ForegroundColor Cyan
+        
+        # Check for security best practices in PowerShell scripts
+        $scriptFiles = Get-ChildItem -Path 'scripts/' -Filter '*.ps1' -Recurse -ErrorAction SilentlyContinue
+        $securityIssues = @()
+        
+        foreach ($file in $scriptFiles) {
+          $content = Get-Content $file.FullName -Raw
+          
+          # Check for hardcoded credentials patterns
+          if ($content -match '(password|pwd|secret|key)\s*=\s*["''][^"'']{3,}["'']') {
+            $securityIssues += "[CRITICAL] Potential hardcoded credential in $($file.Name)"
+          }
+          
+          # Check for insecure HTTP URLs in production contexts
+          if ($content -match 'http://(?!localhost|127\.0\.0\.1)') {
+            $securityIssues += "[HIGH] Insecure HTTP URL detected in $($file.Name)"
+          }
+          
+          # Check for dangerous cmdlets without proper validation
+          $dangerousCmdlets = @('Invoke-Expression', 'Invoke-Command', 'Start-Process')
+          foreach ($cmdlet in $dangerousCmdlets) {
+            if ($content -match $cmdlet -and $content -notmatch 'ShouldProcess') {
+              $securityIssues += "[MEDIUM] $cmdlet used without ShouldProcess validation in $($file.Name)"
+            }
+          }
+          
+          # Check for proper error handling
+          if ($content -match 'try\s*{' -and $content -notmatch 'catch\s*{') {
+            $securityIssues += "[LOW] Try block without catch in $($file.Name)"
+          }
+        }
+        
+        if ($securityIssues.Count -gt 0) {
+          Write-Host "🔒 Security Issues Found:" -ForegroundColor Red
+          foreach ($issue in $securityIssues) {
+            Write-Host "  $issue" -ForegroundColor Red
+          }
+          
+          # Fail on critical issues
+          $criticalIssues = $securityIssues | Where-Object { $_ -match '\[CRITICAL\]' }
+          if ($criticalIssues.Count -gt 0) {
+            Write-Error "Critical security issues found. Build failed."
+            exit 1
+          }
+        } else {
+          Write-Host "✅ No security compliance issues found" -ForegroundColor Green
+        }
+
+  policy-validation:
+    name: MDM Policy Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js for JSON validation
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install JSON validation tools
+      run: |
+        npm install -g ajv-cli jsonlint
+    
+    - name: Validate JSON Policy Files
+      run: |
+        echo "## JSON Policy Validation"
+        find policies/ -name '*.json' -type f | while read -r file; do
+          echo "Validating: $file"
+          if ! jsonlint "$file" > /dev/null 2>&1; then
+            echo "❌ Invalid JSON: $file"
+            jsonlint "$file"
+            exit 1
+          else
+            echo "✅ Valid JSON: $file"
+          fi
+        done
+    
+    - name: Validate XML Policy Files
+      run: |
+        echo "## XML Policy Validation"
+        find policies/ -name '*.xml' -type f | while read -r file; do
+          echo "Validating: $file"
+          if ! xmllint --noout "$file" 2>/dev/null; then
+            echo "❌ Invalid XML: $file"
+            xmllint "$file"
+            exit 1
+          else
+            echo "✅ Valid XML: $file"
+          fi
+        done
+    
+    - name: Policy Content Security Check
+      shell: bash
+      run: |
+        echo "## Policy Security Content Analysis"
+        
+        # Check for suspicious URLs or domains in policy files
+        suspicious_patterns=(
+          "http://(?!localhost|127\.0\.0\.1)"
+          "ftp://"
+          "\.tk$|\.ml$|\.ga$|\.cf$"  # Suspicious TLD patterns
+          "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"  # IP addresses
+        )
+        
+        issues_found=false
+        for pattern in "${suspicious_patterns[@]}"; do
+          if grep -r -E "$pattern" policies/ --include="*.json" --include="*.xml" 2>/dev/null; then
+            echo "⚠️  Suspicious pattern found: $pattern"
+            issues_found=true
+          fi
+        done
+        
+        # Check for overly permissive policies
+        if grep -r '"\*"' policies/ --include="*.json" 2>/dev/null; then
+          echo "⚠️  Wildcard permissions detected - review for security implications"
+          issues_found=true
+        fi
+        
+        if [ "$issues_found" = true ]; then
+          echo "🔍 Please review flagged policy content for security implications"
+        else
+          echo "✅ No suspicious policy content detected"
+        fi
+
+  dependency-audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: PowerShell Module Security Check
+      shell: pwsh
+      run: |
+        Write-Host "## PowerShell Module Security Audit" -ForegroundColor Cyan
+        
+        # Check for module imports in scripts
+        $scriptFiles = Get-ChildItem -Path 'scripts/' -Filter '*.ps1' -Recurse -ErrorAction SilentlyContinue
+        $modules = @()
+        
+        foreach ($file in $scriptFiles) {
+          $content = Get-Content $file.FullName -Raw
+          
+          # Extract Import-Module and Install-Module calls
+          $importMatches = [regex]::Matches($content, 'Import-Module\s+([\w\.-]+)')
+          $installMatches = [regex]::Matches($content, 'Install-Module\s+([\w\.-]+)')
+          
+          foreach ($match in $importMatches) {
+            $modules += $match.Groups[1].Value
+          }
+          
+          foreach ($match in $installMatches) {
+            $modules += $match.Groups[1].Value
+          }
+        }
+        
+        $uniqueModules = $modules | Sort-Object | Get-Unique
+        
+        if ($uniqueModules.Count -gt 0) {
+          Write-Host "📦 PowerShell modules detected:" -ForegroundColor Yellow
+          foreach ($module in $uniqueModules) {
+            Write-Host "  - $module" -ForegroundColor Gray
+            
+            # Check if module exists in PowerShell Gallery
+            try {
+              $moduleInfo = Find-Module $module -ErrorAction Stop
+              Write-Host "    ✅ Found in PowerShell Gallery (Version: $($moduleInfo.Version))" -ForegroundColor Green
+            } catch {
+              Write-Host "    ⚠️  Not found in PowerShell Gallery - verify source" -ForegroundColor Yellow
+            }
+          }
+        } else {
+          Write-Host "✅ No external PowerShell modules detected" -ForegroundColor Green
+        }
+    
+    - name: GitHub Actions Security Check
+      run: |
+        echo "## GitHub Actions Security Audit"
+        
+        # Check for pinned action versions
+        workflow_files=$(find .github/workflows -name '*.yml' -o -name '*.yaml')
+        
+        for file in $workflow_files; do
+          echo "Checking: $file"
+          
+          # Look for unpinned actions (using @main, @master, @latest)
+          if grep -E 'uses:.*@(main|master|latest|v[0-9]+)$' "$file"; then
+            echo "⚠️  Consider pinning actions to specific commit SHAs for security"
+          fi
+          
+          # Check for actions from unknown sources
+          if grep -E 'uses: [^/]+/[^/]+@' "$file" | grep -v 'actions/' | grep -v 'github/'; then
+            echo "🔍 Third-party actions detected - verify trustworthiness:"
+            grep -E 'uses: [^/]+/[^/]+@' "$file" | grep -v 'actions/' | grep -v 'github/'
+          fi
+        done
+        
+        echo "✅ GitHub Actions security audit completed"
